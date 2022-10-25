@@ -26,7 +26,19 @@ net session
 	set /p answer=Please choose an option: 
 	if "%answer%"=="69" exit
 	if "%answer%"=="70" shutdown /r
-	if "%answer%"=="1"  goto :media
+	if "%answer%"=="1" goto :media
+	if "%answer%"=="2" goto :changePasswords
+	if "%answer%"=="3" goto :disableGuest
+	if "%answer%"=="4" goto :passwordPolicy
+	if "%answer%"=="5" goto :lockoutPolicy
+	if "%answer%"=="6" goto :enableFirewall
+	if "%answer%"=="7" goto :userRights
+	if "%answer%"=="8" goto :disableServices
+	if "%answer%"=="9" goto :remoteDesktop
+	if "%answer%"=="10" goto :autoUpdate
+	if "%answer%"=="11" goto :securityOptions
+	if "%answer%"=="12" goto :auditPolicy
+
 
 :media
 	:: searches for prohibited file formats and stores them in text files
@@ -46,19 +58,17 @@ net session
 :changePasswords
 	:: code that might work from previous script but idk and i cant test 
 	::until i setup a machine with multiple users
-	echo Changing all user passwords
-	
 	endlocal
 	setlocal EnableExtensions
 	for /F "tokens=2* delims==" %%G in ('
-		wmic UserAccount where "status='ok'" get name >null
+		wmic UserAccount where "status='ok'" get
 	') do for %%g in (%%~G) do (
-		net user %%~g CyberPatriots23$$
+		net user %%~g CyberPatriots23
 		)
 	endlocal
 	setlocal enabledelayedexpansion	
 	pause
-	goto :display
+	goto :menu
 	
 :disableGuest
 	net user Guest CyberPatriots23$$ /active:no
@@ -69,6 +79,12 @@ net session
 	net accounts /maxpwage:60
 	net accounts /minpwage:10
 	net accounts /uniquepw:3
+	echo Enable password must meet complexity requirments
+	pause
+	echo  disable store password using reversible encyrption
+	pause
+
+	goto :display
 
 
 :lockoutPolicy
