@@ -15,8 +15,13 @@ net session
 	echo "                                                            		   " 
 	echo "~~~~~~~~~~~~~Written by: Sawyer Womack AFJROTC SC-951~~~~~~~~~~~~~~~~"
 	echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-	echo "1) Scan for Media Files																   "
-	echo "69) Exit						70)Reboot							   "
+	echo "1) Scan for Media Files		2) change all passwords				   "
+	echo "3) disable guest account		4) Password Policy					   "
+	echo "5) Lockout Policy			    6) Enable Firewall  				   "
+	echo "7) User Rights        		8) Disable Services				   	   "
+	echo "9) Remote Desktop Config		10) Auto Update				   		   "
+	echo "11) Security Options  		12) Audit Policy				       "
+	echo "69) Exit						70) Reboot							   "
 	echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 	set /p answer=Please choose an option: 
 	if "%answer%"=="69" exit
@@ -56,23 +61,65 @@ net session
 	goto :display
 	
 :disableGuest
-	echo find bad files
+	net user Guest CyberPatriots23$$ /active:no
 	goto :display
 
 :passwordPolicy
-	echo find bad files
-	goto :display
+	net accounts /minpwlen:10
+	net accounts /maxpwage:60
+	net accounts /minpwage:10
+	net accounts /uniquepw:3
+
 
 :lockoutPolicy
-	echo find bad files
+	net accounts /lockoutduration:30
+	net accounts /lockoutthreshold:3
+	net accounts /lockoutwindow:15
 	goto :display
 
 :enableFirewall
-	echo find bad files
+	NetSh Advfirewall set allprofiles state on
+	Netsh Advfirewall show allprofiles
+
+:userRights
 	goto :display
 
 :disableServices
-	echo find bad files
+	echo Disabling Services
+	sc stop TapiSrv
+	sc config TapiSrv start= disabled
+	sc stop TlntSvr
+	sc config TlntSvr start= disabled
+	sc stop ftpsvc
+	sc config ftpsvc start= disabled
+	sc stop SNMP
+	sc config SNMP start= disabled
+	sc stop SessionEnv
+	sc config SessionEnv start= disabled
+	sc stop TermService
+	sc config TermService start= disabled
+	sc stop UmRdpService
+	sc config UmRdpService start= disabled
+	sc stop SharedAccess
+	sc config SharedAccess start= disabled
+	sc stop remoteRegistry 
+	sc config remoteRegistry start= disabled
+	sc stop SSDPSRV
+	sc config SSDPSRV start= disabled
+	sc stop W3SVC
+	sc config W3SVC start= disabled
+	sc stop SNMPTRAP
+	sc config SNMPTRAP start= disabled
+	sc stop remoteAccess
+	sc config remoteAccess start= disabled
+	sc stop RpcSs
+	sc config RpcSs start= disabled
+	sc stop HomeGroupProvider
+	sc config HomeGroupProvider start= disabled
+	sc stop HomeGroupListener
+	sc config HomeGroupListener start= disabled
+	
+	pause
 	goto :display
 
 :remoteDesktop
@@ -88,7 +135,14 @@ net session
 	goto :display
 
 :auditPolicy
-	echo find bad files
+	auditpol /set /category:"Account Logon" /Success:enable /failure:enable >nul
+	auditpol /set /category:"Logon/Logoff" /Success:enable /failure:enable >nul
+	auditpol /set /category:"Account Management" /Success:enable /failure:enable >nul
+	Auditpol /set /category:"DS Access" /failure:enable >nul
+	Auditpol /set /category:"Object Access" /failure:enable >nul
+	Auditpol /set /category:"policy change" /Success:enable /failure:enable >nul
+	Auditpol /set /category:"Privilege use" /Success:enable /failure:enable >nul
+	Auditpol /set /category:"System" /failure:enable >nul
 	goto :display
 
 
