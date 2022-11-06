@@ -140,15 +140,37 @@ def pFiles():
         os.system("sudo find / -name \"*" + badFileTypes[i] + "\" -type f >> pFiles.log")
 
 def firewallConfig():
-    os.system("sudo echo sucsess")
+    os.system("sudo apt-get install ufw")
+    os.system("sudo ufw enable")
+    os.system("sudo ufw status")
+
+def confLogin():
+    os.system("sed -i \"s/PASS_MAX_DAYS 99999/PASS_MAX_DAYS 60\" /etc/login.defs")
 
 
-def chngPasswd():
-    for i in range(0,len(sysUsers)):
-        os.system("sudo echo -e " + password + "\n" + password + " | passwd " + sysUsers[i])
+#def chngPasswd():
+ #   for i in range(0,len(sysUsers)):
+ #       os.system("sudo passwd " + sysUsers[i])
+ #       print(password)
 
 
+def sys():
+    os.system("sudo sed -i '$a net.ipv6.conf.all.disable_ipv6 = 1' /etc/sysctl.conf ")
+    os.system("sudo sed -i '$a net.ipv6.conf.default.disable_ipv6 = 1' /etc/sysctl.conf")
+    os.system("sudo 	sed -i '$a net.ipv6.conf.lo.disable_ipv6 = 1' /etc/sysctl.conf")
 
+    os.system("sudo sed -i '$a net.ipv4.conf.all.rp_filter=1' /etc/sysctl.conf")
+
+    os.system("sudo sed -i '$a net.ipv4.conf.all.accept_source_route=0' /etc/sysctl.conf")
+
+    os.system("sudo sed -i '$a net.ipv4.tcp_max_syn_backlog = 2048' /etc/sysctl.conf")
+    os.system("sudo sed -i '$a net.ipv4.tcp_synack_retries = 2' /etc/sysctl.conf")
+    os.system("sudo sed -i '$a net.ipv4.tcp_syn_retries = 5' /etc/sysctl.conf")
+    os.system("sudo sed -i '$a net.ipv4.tcp_syncookies=1' /etc/sysctl.conf")
+
+    os.system("sudo sed -i '$a net.ipv4.ip_foward=0' /etc/sysctl.conf")
+    os.system("sudo sed -i '$a net.ipv4.conf.all.send_redirects=0' /etc/sysctl.conf")
+    os.system("sudo sed -i '$a net.ipv4.conf.default.send_redirects=0' /etc/sysctl.conf")
 
 
 
